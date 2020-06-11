@@ -1,13 +1,52 @@
+####
+# ATTENTION:
+# Replace all occurrences of sandbox with your project's name.
+####
+
+# v3 syntax
 version: '3'
+
+# Named volumes
 volumes:
-    jenkins_home:
-      driver: local
+# Postgres Data
+  postgres-data:
+    driver: local
+
+
 services:
-  jenkins:
-    image: jenkinsci/blueocean
-    container_name: jenkis
-    ports:
-      - '9000:8080'
+  # PHP (with Nginx)
+  app:
+    image: ambientum/php:7.3-nginx
+    container_name: nginx
     volumes:
-      - 'jenkins_home:/var/jenkins_home'
-    #   - '/var/run/docker.sock:/var/run/docker.sock'
+      # Volumes entregueaki
+      - .:/var/www/app
+    ports:
+      - "80:8080"
+      - "443:8083"
+    networks:
+      - docker
+
+  # Postgres (11)
+  postgres:
+    image: postgres:11
+    container_name: postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=docker
+      -  - POSTGRES_DB=jenkis
+      - POSTGRES_USER=docker
+    networks:
+      - docker
+networks:
+  docker:
+    driver: bridge
+
+ 
+
+
+
+
