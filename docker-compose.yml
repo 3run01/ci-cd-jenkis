@@ -17,7 +17,7 @@ services:
   # PHP (with Nginx)
   app:
     image: ambientum/php:7.3-nginx
-    container_name: nginx
+    container_name: jenkis-nginx
     volumes:
       # Volumes entregueaki
       - .:/var/www/app
@@ -25,24 +25,24 @@ services:
       - "80:8080"
       - "443:8083"
     networks:
-      - docker
+      - docker_jenkis
 
   # Postgres (11)
   postgres:
     image: postgres:11
-    container_name: postgres
+    container_name: jenkis-postgres
     volumes:
       - postgres-data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     environment:
       - POSTGRES_PASSWORD=docker
-      -  - POSTGRES_DB=jenkis
+      - POSTGRES_DB=jenkis
       - POSTGRES_USER=docker
     networks:
-      - docker
+      - docker_jenkis
 networks:
-  docker:
+  docker_jenkis:
     driver: bridge
 
  
