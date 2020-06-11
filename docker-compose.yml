@@ -1,6 +1,6 @@
 ####
 # ATTENTION:
-# Replace all occurrences of sandbox with your project's name.
+# Replace all occurrences of jenkis with your project's name.
 ####
 
 # v3 syntax
@@ -8,45 +8,32 @@ version: '3'
 
 # Named volumes
 volumes:
-# Postgres Data
-  postgres-data:
+  # Postgres Data
+  jenkis-postgres-data:
     driver: local
-
 
 services:
   # PHP (with Nginx)
   app:
-    image: ambientum/php:7.3-nginx
-    container_name: jenkis-nginx
+    image: ambientum/php:7.4-nginx
+    container_name: jenkis-app
     volumes:
-      # Volumes entregueaki
       - .:/var/www/app
     ports:
-      - "80:8080"
-      - "443:8083"
-    networks:
-      - docker_jenkis
+      - "8080:8080"
+      - "8083:8083"
+    links:
+      - postgres
 
   # Postgres (11)
   postgres:
     image: postgres:11
     container_name: jenkis-postgres
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - jenkis-postgres-data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_PASSWORD=docker
+      - POSTGRES_PASSWORD=jenkis
       - POSTGRES_DB=jenkis
-      - POSTGRES_USER=docker
-    networks:
-      - docker_jenkis
-networks:
-  docker_jenkis:
-    driver: bridge
-
- 
-
-
-
-
+      - POSTGRES_USER=jenkis
